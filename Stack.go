@@ -1,6 +1,7 @@
 package Stack
 
 import (
+	"fmt"
 	"sync"
 )
 
@@ -19,7 +20,7 @@ func NewStack(size int64) *Stack {
 
 func (s *Stack) Push (item interface{}) error {
 	if item == nil {
-		return nil
+		return fmt.Errorf("item had no value")
 	}
 
 	s.lock.Lock()
@@ -52,18 +53,15 @@ func (s *Stack) Pop() interface{} {
 }
 
 func (s *Stack) IsEmpty() bool {
-	s.lock.Lock()
-	defer s.lock.Unlock()
 	return len(s.items) == 0
 }
 
 func (s *Stack) Length() int {
-	ret := -1
-	if !s.IsEmpty() {
-		s.lock.Lock()
-		ret = len(s.items)
-		s.lock.Unlock()
-	}
+	return len(s.items)
+}
 
-	return ret
+func (s *Stack) ClearStack() {
+	s.lock.Lock()
+	s.items = nil
+	s.lock.Unlock()
 }
